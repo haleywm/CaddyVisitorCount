@@ -31,6 +31,15 @@ class ConnectionCounter:
         else:
             self.total_visitors = 0
             print(f"No data found at {file_path}, re-initialising visitor count")
+            # Save default file
+            with open(file_path, "wt") as f:
+                json.dump(
+                    {
+                        "total_visitors": 0,
+                        "current_visitors": 0,
+                    },
+                    f,
+                )
 
     def see_address(self, address: str) -> None:
         current_time = time.time()
