@@ -26,7 +26,7 @@ class ConnectionCounter:
         if file_path.exists() and os.path.getsize(file_path) > 0:
             with open(file_path, "rt") as f:
                 data = json.load(f)
-                self.total_visitors = data["total_visitors"]
+                self.total_visitors = int(data["total_visitors"])
             print(f"Read current total visitors from {file_path}")
         else:
             self.total_visitors = 0
