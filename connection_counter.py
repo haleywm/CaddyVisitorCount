@@ -78,13 +78,17 @@ class ConnectionCounter:
     def _check_sessions(self) -> None:
         # Check if any sessions are older than max age and clear them if they are
         max_allowed_age = time.time() - self.max_session_length
+        to_delete: list[str] = list()
         for address in self.seen_addresses:
             if self.seen_addresses[address] < max_allowed_age:
                 # Address hasn't been seen in too long, remove it from list and mark file change
-                del self.seen_addresses[address]
+                to_delete.append(address)
                 self.file_change = True
+        # Delete keys that have expired, if any
+        for delkey in to_delete:
+            del self.seen_addresses[delkey]
         # Schedule a file write if changes occurred
-        if self.file_change:
+        if len(to_delete) > 1:
             asyncio.create_task(self.write_files())
 
     async def _check_sessions_after(self, time: float) -> None:
